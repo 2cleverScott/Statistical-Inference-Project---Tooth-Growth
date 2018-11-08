@@ -1,0 +1,63 @@
+---
+title: "Statistical Inference Project - Tooth Growth"
+author: "Scott Roberts"
+date: "April 2, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Executive Summary
+
+This report provides a comparison of the effect of Orange Juice and Vitamin C on tooth growth.  The dosage levels for each supplement were .5, 1.0 and 2.0. 
+
+Exploratory Analysis
+
+```{r tooth}
+library(ggplot2)
+data(ToothGrowth)
+#Basic Information about the Tooth Growth Data
+summary(ToothGrowth)
+#
+head(ToothGrowth)
+#
+table(ToothGrowth$dose)
+
+####Plot of the two factors
+qplot(dose, len, data=ToothGrowth, color=supp, facets=.~supp, geom=c("auto"))
+
+```
+
+
+Assumptions
+
+We assume the dataset Toothgrowth is a from randomly sample, and that the variance amongst the means are similar. We also assume the population distribution must be close to normal.
+
+t-Test for Supplement Type
+```{r}
+t.test(len ~ supp, data = ToothGrowth)
+
+```
+With a p-value of .06, we would fail to reject the null hypothesis that there is no difference between the two supplements for this test.  Looking further into the data we can now explore dosage levels by supplement to see if there is a difference.
+
+t-Test by Dose and by Supplement
+```{r}
+##Subset three dataframes by dosage
+d1 <- subset(ToothGrowth, dose == .5)
+d2 <- subset(ToothGrowth, dose == 1.0)
+d3 <- subset(ToothGrowth, dose == 2.0)
+
+##With Doasage of .5
+t.test(len ~supp, var.equal = FALSE, data = d1)
+
+##With Doasage of 1.0
+t.test(len ~supp, var.equal = FALSE, data = d2)
+##With Doasage of 2.0
+t.test(len ~supp, var.equal = FALSE, data = d3)
+```
+Conclusion
+
+First, the dosage levels of .5 and 1.0 for OJ and Vitamin C had t-test p-values of .001 and .006 respectively. We reject the hypothesis and can conclude that there is a difference at those dosage levels. At the 2.0 dosage, we see a p-value of .963, where we would fail to reject and conclude that with the means so close that there is no difference in supplements at this dosage level.
+
+
